@@ -1,0 +1,280 @@
+@startuml
+title DER - Bicicleteria
+hide circle
+skinparam linetype ortho
+skinparam entityAttributeIconSize 0
+
+entity LOCAL {
+  * id_local : PK
+  --
+  nombre
+  telefono
+  email
+  direccion
+  localidad
+  provincia
+}
+
+entity EMPLEADO {
+  * id_empleado : PK
+  --
+  id_local : FK
+  nombre
+  apellido
+  dni
+  puesto
+  fecha_ingreso
+  telefono
+  email
+  domicilio
+  fecha_nacimiento
+  localidad
+  provincia
+}
+
+entity CLIENTE {
+  * id_cliente : PK
+  --
+  nombre
+  apellido
+  dni
+  telefono
+  email
+  direccion
+  fecha_nacimiento
+  localidad
+  provincia
+}
+
+entity PROVEEDOR {
+  * id_proveedor : PK
+  --
+  razon_social
+  cuit
+  telefono
+  email
+  direccion
+  localidad
+  provincia
+}
+
+entity TIPO_PRODUCTO {
+  * id_tipo_producto : PK
+  --
+  tipo_producto
+}
+
+entity PRODUCTO {
+  * cod_producto : PK
+  --
+  id_tipo_producto : FK
+  nombre
+  descripcion
+  precio_venta
+}
+
+entity MARCA {
+  * id_marca : PK
+  --
+  marca
+}
+
+entity CATEGORIA_BICICLETA {
+  * id_categoria_bicicleta : PK
+  --
+  categoria
+}
+
+entity MODELO_BICICLETA {
+  * id_modelo_bicicleta : PK
+  --
+  id_marca : FK
+  id_categoria_bicicleta : FK
+}
+
+entity BICICLETA_VENTA {
+  * cod_producto : PK, FK
+  --
+  id_modelo_bicicleta : FK
+  meses_garantia
+}
+
+entity CATEGORIA_ACCESORIO {
+  * id_categoria_accesorio : PK
+  --
+  categoria
+}
+
+entity ACCESORIO {
+  * cod_producto : PK, FK
+  --
+  id_categoria_accesorio : FK
+  id_marca : FK
+}
+
+entity CATEGORIA_REPUESTO {
+  * id_categoria_repuesto : PK
+  --
+  categoria
+}
+
+entity REPUESTO {
+  * cod_repuesto : PK
+  --
+  id_categoria_repuesto : FK
+  descripcion
+  compatibilidad
+}
+
+entity FORMA_PAGO {
+  * id_forma_pago : PK
+  --
+  forma_pago
+}
+
+entity VENTA {
+  * nro_venta : PK
+  --
+  id_cliente : FK
+  id_empleado : FK
+  id_local : FK
+  id_forma_pago : FK
+  fecha_hora
+  total
+}
+
+entity DETALLE_VENTA {
+  * id_detalle_venta : PK
+  --
+  nro_venta : FK
+  cod_producto : FK
+  cantidad
+  precio_unitario
+  subtotal
+}
+
+entity COMPRA {
+  * nro_compra : PK
+  --
+  id_proveedor : FK
+  id_empleado : FK
+  id_local : FK
+  fecha
+  total
+}
+
+entity DETALLE_COMPRA {
+  * id_detalle_compra : PK
+  --
+  nro_compra : FK
+  cod_producto : FK
+  cantidad
+  precio_unitario
+  subtotal
+}
+
+entity ESTADO_BICI_ALQUILER {
+  * id_estado_bici_alquiler : PK
+  --
+  estado
+}
+
+entity BICICLETA_ALQUILER {
+  * nro_serie : PK
+  --
+  id_modelo_bicicleta : FK
+  id_local : FK
+  id_estado_bici_alquiler : FK
+  precio_hora
+  precio_dia
+}
+
+entity ESTADO_ALQUILER {
+  * id_estado_alquiler : PK
+  --
+  estado
+}
+
+entity ALQUILER {
+  * nro_alquiler : PK
+  --
+  id_cliente : FK
+  id_empleado : FK
+  id_local : FK
+  id_estado_alquiler : FK
+  nro_serie : FK
+  fecha_inicio
+  fecha_fin_pactada
+  fecha_devolucion_real
+  importe_total
+}
+
+entity ESTADO_REPARACION {
+  * id_estado_reparacion : PK
+  --
+  estado
+}
+
+entity REPARACION {
+  * nro_reparacion : PK
+  --
+  id_cliente : FK
+  id_empleado : FK
+  id_local : FK
+  id_modelo_bicicleta : FK
+  id_estado_reparacion : FK
+  numero_serie_bicicleta
+  fecha_ingreso
+  fecha_entrega_estimada
+  fecha_entrega_real
+  diagnostico
+}
+
+entity DETALLE_REPARACION {
+  * id_detalle_reparacion : PK
+  --
+  nro_reparacion : FK
+  cod_repuesto : FK
+  cantidad
+  precio_unitario
+  subtotal
+}
+
+LOCAL ||--o{ EMPLEADO
+TIPO_PRODUCTO ||--o{ PRODUCTO
+MARCA ||--o{ MODELO_BICICLETA
+CATEGORIA_BICICLETA ||--o{ MODELO_BICICLETA
+PRODUCTO ||--o| BICICLETA_VENTA
+MODELO_BICICLETA ||--o{ BICICLETA_VENTA
+PRODUCTO ||--o| ACCESORIO
+CATEGORIA_ACCESORIO ||--o{ ACCESORIO
+MARCA ||--o{ ACCESORIO
+CATEGORIA_REPUESTO ||--o{ REPUESTO
+CLIENTE ||--o{ VENTA
+EMPLEADO ||--o{ VENTA
+LOCAL ||--o{ VENTA
+FORMA_PAGO ||--o{ VENTA
+VENTA ||--o{ DETALLE_VENTA
+PRODUCTO ||--o{ DETALLE_VENTA
+PROVEEDOR ||--o{ COMPRA
+EMPLEADO ||--o{ COMPRA
+LOCAL ||--o{ COMPRA
+COMPRA ||--o{ DETALLE_COMPRA
+PRODUCTO ||--o{ DETALLE_COMPRA
+MODELO_BICICLETA ||--o{ BICICLETA_ALQUILER
+LOCAL ||--o{ BICICLETA_ALQUILER
+ESTADO_BICI_ALQUILER ||--o{ BICICLETA_ALQUILER
+CLIENTE ||--o{ ALQUILER
+EMPLEADO ||--o{ ALQUILER
+LOCAL ||--o{ ALQUILER
+ESTADO_ALQUILER ||--o{ ALQUILER
+BICICLETA_ALQUILER ||--o{ ALQUILER
+CLIENTE ||--o{ REPARACION
+EMPLEADO ||--o{ REPARACION
+LOCAL ||--o{ REPARACION
+MODELO_BICICLETA ||--o{ REPARACION
+ESTADO_REPARACION ||--o{ REPARACION
+REPARACION ||--o{ DETALLE_REPARACION
+REPUESTO ||--o{ DETALLE_REPARACION
+
+@enduml
